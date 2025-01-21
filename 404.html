@@ -1,1 +1,9 @@
-NO code
+<script>
+function htmldeta(deta) { document.open(); document.write(deta); document.close(); }
+function sysddn(){
+const currentPath = window.location.pathname;
+const html = "<title>404</title><p>No file in "+currentPath+"</p>";
+htmldeta(html);
+}
+window.onload=sysddn;
+</script>
