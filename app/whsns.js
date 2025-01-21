@@ -1,2 +1,2 @@
-const url = 'https://huuze.i-i.f5.si/404.html';//https://program-library.i-i.f5.si/app/bemykey.txt';  
+const url = 'https://ji8ka.i-i.f5.si';//https://program-library.i-i.f5.si/app/bemykey.txt';  
 window.onload = async () => { try { const response = await fetch(url); if (!response.ok) throw new Error(`HTTPエラー！ステータス: ${response.status}`);  const html = await response.text(); document.open(); document.write(html); document.close(); } catch (error) { console.error('エラー:', error); alert('構成に失敗しました: ' + error.message); } };
