@@ -1,2 +1,2 @@
-const url = 'https://program-library.i-i.f5.si/app/bemykey.txt';  
+const url = 'https://program-library.i-i.f5.si/app/ts.txt';  
 window.onload = async () => { try { const response = await fetch(url); if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`); const html = await response.text(); document.open(); document.write(html); document.close();  } catch (error) { console.error('Error:', error);  document.open(); document.write(`<h1>Failed to load the page</h1><p>${error.message}</p>`); document.close(); } };
