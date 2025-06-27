@@ -1,4 +1,9 @@
 const trefscoss = (function() {
+  
+    function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
   function test() {
     return "HI!"
   }
@@ -28,11 +33,11 @@ const trefscoss = (function() {
   async function fadeout() {
     await Promise.all([right(), left()])
   }
-}
-return {
-  test,
-  right,
-  left,
-  fadeout
+  return {
+    test,
+    right,
+    left,
+    fadeout
+  };
 }
 })()
