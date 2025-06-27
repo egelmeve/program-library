@@ -1,11 +1,10 @@
 const trefscoss = (function() {
-  
-    function wait(ms) {
+  function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  
+
   function test() {
-    return "HI!"
+    return "HI!";
   }
 
   function right() {
@@ -15,9 +14,9 @@ const trefscoss = (function() {
       const distance = ddecw - rect.left;
       box.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
       box.style.transform = `translateX(${distance}px)`;
-      box.style.opacity = '0'
-      return wait(600)
-    })
+      box.style.opacity = '0';
+    });
+    return wait(600);
   }
 
   function left() {
@@ -26,18 +25,19 @@ const trefscoss = (function() {
       const distance = -rect.left;
       box.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
       box.style.transform = `translateX(${distance}px)`;
-      box.style.opacity = '0'
-      return wait(600)
-    })
+      box.style.opacity = '0';
+    });
+    return wait(600);
   }
+
   async function fadeout() {
-    await Promise.all([right(), left()])
+    await Promise.all([right(), left()]);
   }
+
   return {
     test,
     right,
     left,
     fadeout
   };
-}
-})()
+})(); // ← ここでIIFEを閉じる（関数の閉じ括弧と即時実行の括弧）
