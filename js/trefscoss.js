@@ -12,22 +12,22 @@ const trefscoss = (function() {
       const ddecw = document.documentElement.clientWidth;
       const rect = box.getBoundingClientRect();
       const distance = ddecw - rect.left;
-      box.style.transition = 'transform 0.8s ease, opacity 0.6s ease';
+      box.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
       box.style.transform = `translateX(${distance}px)`;
       box.style.opacity = '0';
     });
-    return wait(800);
+    return wait(1500);
   }
 
   function left() {
     document.querySelectorAll('.left').forEach(box => {
       const rect = box.getBoundingClientRect();
       const distance = -rect.left;
-      box.style.transition = 'transform 0.8s ease, opacity 0.6s ease';
+      box.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
       box.style.transform = `translateX(${distance}px)`;
       box.style.opacity = '0';
     });
-    return wait(800);
+    return wait(1500);
   }
 
   async function fadeout() {
