@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ペアチェッカー</title>
+  <script src="https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/nacl.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-sha3@0.8.0/build/sha3.min.js"></script>
+</head>
+<body>
+  <h1>🔍 公開IDと秘密鍵のペアチェック</h1>
+
+  <label for="uid">公開IDを入力:</label><br>
+  <input type="text" id="uid" size="70"><br><br>
+
+  <label for="file">秘密鍵ファイルを選択:</label><br>
+  <input type="file" id="file"><br><br>
+
+  <button id="check">チェックする</button>
+  <p id="result"></p>
+
+  <script>
+    async function blake3(input) {
+      const encoder = new TextEncoder();
+      const data = input instanceof Uint8Array ? input : encoder.encode(input);
+      const digest = await crypto.subtle.digest("SHA-256", data); // 仮のBLAKE3代用
+      return new Uint8Array(digest);
+    }
+
+    document.getElementById("check").addEventListener("click", async () => {
+      const result = document.getElementById("result");
+      result.textContent = "チェック中...";
+
+      const uidInput = document.getElementById("uid").value.trim().toLowerCase();
+      const fileInput = document.getElementById("file").files[0];
+      if (!uidInput || !fileInput) {
+        result.textContent = "⚠️ UIDとファイルを両方指定してください";
+        return;
+      }
+
+      const arrayBuffer = await fileInput.arrayBuffer();
+      const secretKey = new Uint8Array(arrayBuffer);
+      const seed = secretKey.slice(0, 32); // Ed25519のseed部分
+
+      // UID再計算
+      const sha3 = sha3_512.arrayBuffer(seed);
+      const blake = await blake3(seed);
+      const hidden = sha3_512.arrayBuffer(new Uint8Array(sha3));
+      const uid_sha = new Uint8Array(sha3_512.arrayBuffer(new Uint8Array(hidden))).slice(0, 16);
+      const uid_blake = blake.slice(0, 16);
+      const final_uid = [...uid_sha, ...uid_blake];
+      const uidHex = final_uid.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      // 比較
+      if (uidHex === uidInput) {
+        result.textContent = "✅ ペアが一致しました！";
+      } else {
+        result.textContent = "❌ 一致しません。別の鍵かUIDかも？";
+      }
+    });
+  </script>
+</body>
+</html>
