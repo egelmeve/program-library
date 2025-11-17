@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>公開IDと秘密鍵生成ツール</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/nacl.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-sha3@0.8.0/build/sha3.min.js"></script>
+</head>
+<body>
+  <h1>🔐 公開IDと秘密鍵を生成</h1>
+  <button id="generate">生成してダウンロード</button>
+  <p id="status"></p>
+
+  <script>
+    async function blake3(input) {
+      const encoder = new TextEncoder();
+      const data = input instanceof Uint8Array ? input : encoder.encode(input);
+      const digest = await crypto.subtle.digest("SHA-256", data); // 仮のBLAKE3代用（本物はWASM推奨）
+      return new Uint8Array(digest);
+    }
+
+    document.getElementById("generate").addEventListener("click", async () => {
+      const status = document.getElementById("status");
+      status.textContent = "生成中...";
+
+      // 1. 秘密データ生成（256バイト = 2048bit）
+      const secret = new Uint8Array(256);
+      crypto.getRandomValues(secret);
+
+      // 2. ハッシュ生成
+      const sha3 = sha3_512.arrayBuffer(secret);         // A
+      const blake = await blake3(secret);                // B（仮）
+      const hidden = sha3_512.arrayBuffer(new Uint8Array(sha3)); // H
+      const uid_sha = new Uint8Array(sha3_512.arrayBuffer(new Uint8Array(hidden))).slice(0, 16);
+      const uid_blake = blake.slice(0, 16);
+      const final_uid = [...uid_sha, ...uid_blake];
+
+      // 3. 鍵生成（Ed25519）
+      const keypair = nacl.sign.keyPair.fromSeed(secret.slice(0, 32)); // Ed25519は32バイトseed
+      const secretKey = keypair.secretKey;
+      const publicKey = keypair.publicKey;
+
+      // 4. ファイル作成
+      const uidHex = final_uid.map(b => b.toString(16).padStart(2, '0')).join('');
+      const idTxt = `uid=${uidHex}\nalg_id=sha3-512+blake3\nalg_sig=ed25519\n`;
+
+      const zip = new JSZip();
+      zip.file("id.txt", idTxt);
+      zip.file("secret-key", secretKey);
+
+      const blob = await zip.generateAsync({ type: "blob" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `ukey-${uidHex.slice(0, 8)}.zip`;
+      link.click();
+
+      status.textContent = "✅ ダウンロード完了！";
+    });
+  </script>
+</body>
+</html>
