@@ -1,7 +1,12 @@
 megrtnRegister("alert", {
   expose: {
-    alert(msg) {
-      window.alert(msg ?? "Hello world");
+    alert: {
+        hello(message = "Hello, world!") {
+          alert(message);
+        },
+        raw(text) {
+          alert(String(text));
+        }
     }
   }
 });
