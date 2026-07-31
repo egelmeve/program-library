@@ -1,1 +1,4 @@
 pwj
+/app/linux/ubuntu.pwj/pwj
+./pwj
+lunix/ubuntu
